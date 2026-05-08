@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SellRouteImport } from './routes/sell'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ListingIdRouteImport } from './routes/listing.$id'
 
+const SellRoute = SellRouteImport.update({
+  id: '/sell',
+  path: '/sell',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
   '/saved': typeof SavedRoute
+  '/sell': typeof SellRoute
   '/listing/$id': typeof ListingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
   '/saved': typeof SavedRoute
+  '/sell': typeof SellRoute
   '/listing/$id': typeof ListingIdRoute
 }
 export interface FileRoutesById {
@@ -52,25 +60,34 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
   '/saved': typeof SavedRoute
+  '/sell': typeof SellRoute
   '/listing/$id': typeof ListingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/browse' | '/saved' | '/listing/$id'
+  fullPaths: '/' | '/browse' | '/saved' | '/sell' | '/listing/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/browse' | '/saved' | '/listing/$id'
-  id: '__root__' | '/' | '/browse' | '/saved' | '/listing/$id'
+  to: '/' | '/browse' | '/saved' | '/sell' | '/listing/$id'
+  id: '__root__' | '/' | '/browse' | '/saved' | '/sell' | '/listing/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BrowseRoute: typeof BrowseRoute
   SavedRoute: typeof SavedRoute
+  SellRoute: typeof SellRoute
   ListingIdRoute: typeof ListingIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sell': {
+      id: '/sell'
+      path: '/sell'
+      fullPath: '/sell'
+      preLoaderRoute: typeof SellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/saved': {
       id: '/saved'
       path: '/saved'
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BrowseRoute: BrowseRoute,
   SavedRoute: SavedRoute,
+  SellRoute: SellRoute,
   ListingIdRoute: ListingIdRoute,
 }
 export const routeTree = rootRouteImport
