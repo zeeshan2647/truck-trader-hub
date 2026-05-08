@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Heart, MapPin, Phone, ShieldCheck, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
-import { listings } from "@/lib/listings";
+import { listings, type Listing } from "@/lib/listings";
 import { isSaved, toggleSaved } from "@/lib/saved";
 
 export const Route = createFileRoute("/listing/$id")({
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/listing/$id")({
 });
 
 function ListingDetail() {
-  const { listing } = Route.useLoaderData();
+  const { listing } = Route.useLoaderData() as { listing: Listing };
   const [active, setActive] = useState(0);
   const [saved, setSaved] = useState(false);
   useEffect(() => setSaved(isSaved(listing.id)), [listing.id]);
@@ -63,7 +63,7 @@ function ListingDetail() {
           </div>
           {listing.images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto p-2">
-              {listing.images.map((img, i) => (
+              {listing.images.map((img: string, i: number) => (
                 <button
                   key={i}
                   onClick={() => setActive(i)}
@@ -108,7 +108,7 @@ function ListingDetail() {
                 <div className="flex justify-between border-b py-1.5"><dt className="text-muted-foreground">VIN</dt><dd className="font-mono text-xs font-medium">{listing.vin}</dd></div>
                 {Object.entries(listing.specs).map(([k, v]) => (
                   <div key={k} className="flex justify-between border-b py-1.5">
-                    <dt className="text-muted-foreground">{k}</dt><dd className="font-medium">{v}</dd>
+                    <dt className="text-muted-foreground">{k}</dt><dd className="font-medium">{String(v)}</dd>
                   </div>
                 ))}
               </dl>
