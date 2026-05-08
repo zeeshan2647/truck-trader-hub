@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Search, MapPin, Loader2, Crosshair } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { lazy, Suspense } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { LocationMap } from "./LocationMap";
+const LocationMap = lazy(() =>
+  import("./LocationMap").then((m) => ({ default: m.LocationMap })),
+);
 import {
   ALL_BRANDS,
   DEFAULT_RADIUS,
@@ -431,7 +434,15 @@ function LocationScreen({
 
       <div className="h-64 w-full shrink-0 bg-muted">
         {location ? (
-          <LocationMap lat={location.lat} lng={location.lng} radius={radius} />
+          <Suspense
+            fallback={
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                Loading map…
+              </div>
+            }
+          >
+            <LocationMap lat={location.lat} lng={location.lng} radius={radius} />
+          </Suspense>
         ) : (
           <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
             Pick a location to see a search radius on the map.
