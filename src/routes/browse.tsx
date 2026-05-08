@@ -52,7 +52,7 @@ function Browse() {
   }, [search]);
 
   const update = (patch: Partial<BrowseSearch>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+    navigate({ search: (prev: BrowseSearch) => ({ ...prev, ...patch }) });
 
   return (
     <div className="min-h-screen bg-background">
