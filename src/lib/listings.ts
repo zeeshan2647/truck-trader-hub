@@ -15,6 +15,8 @@ export type Listing = {
   price: number;
   mileage: number;
   location: string;
+  lat: number;
+  lng: number;
   condition: "New" | "Used";
   transmission: "Manual" | "Automatic";
   vin: string;
