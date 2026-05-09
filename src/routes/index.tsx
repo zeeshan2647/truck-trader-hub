@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { Search, ShieldCheck, Truck, Wrench } from "lucide-react";
+import { ShieldCheck, Truck, Wrench } from "lucide-react";
 import heroImg from "@/assets/hero-truck.jpg";
 import { Header } from "@/components/Header";
 import { ListingCard } from "@/components/ListingCard";
+import { HomeSearch } from "@/components/HomeSearch";
 import { listings } from "@/lib/listings";
 
 export const Route = createFileRoute("/")({
@@ -24,21 +25,17 @@ function Index() {
       <section className="relative isolate overflow-hidden">
         <img src={heroImg} alt="" width={1536} height={1024} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-[image:var(--gradient-hero)]" />
-        <div className="relative mx-auto max-w-6xl px-4 py-16 text-primary-foreground sm:py-24">
+        <div className="relative mx-auto max-w-6xl px-4 pb-20 pt-14 text-primary-foreground sm:pb-28 sm:pt-20">
           <h1 className="max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
             Find the right rig. <span className="text-accent">Move your business.</span>
           </h1>
           <p className="mt-3 max-w-xl text-sm text-primary-foreground/85 sm:text-base">
             Thousands of commercial trucks and trailers from trusted dealers and private sellers.
           </p>
-          <Link
-            to="/browse"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-background px-5 py-3 text-sm font-semibold text-foreground shadow-lg hover:bg-background/95"
-          >
-            <Search className="h-4 w-4" /> Browse listings
-          </Link>
         </div>
       </section>
+
+      <HomeSearch />
 
       <section className="mx-auto max-w-6xl px-4 py-8">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
