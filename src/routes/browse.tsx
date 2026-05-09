@@ -33,7 +33,17 @@ export const Route = createFileRoute("/browse")({
 });
 
 function Browse() {
-  const [filters, setFilters] = useState<Filters>(defaultFilters());
+  const [filters, setFilters] = useState<Filters>(() => {
+    if (typeof window === "undefined") return defaultFilters();
+    try {
+      const raw = sessionStorage.getItem("rigmarket:filters");
+      if (raw) {
+        sessionStorage.removeItem("rigmarket:filters");
+        return { ...defaultFilters(), ...JSON.parse(raw) };
+      }
+    } catch {}
+    return defaultFilters();
+  });
   const [open, setOpen] = useState(false);
 
   const results = useMemo(() => {
