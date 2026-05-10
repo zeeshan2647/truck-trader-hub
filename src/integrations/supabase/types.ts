@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          buyer_interests: string[] | null
+          buyer_max_price: number | null
+          buyer_min_price: number | null
+          created_at: string
+          dealer_inventory_notes: string | null
+          full_name: string | null
+          id: string
+          location: string | null
+          onboarded: boolean
+          role: Database["public"]["Enums"]["user_role"] | null
+          seller_items: string | null
+          updated_at: string
+        }
+        Insert: {
+          buyer_interests?: string[] | null
+          buyer_max_price?: number | null
+          buyer_min_price?: number | null
+          created_at?: string
+          dealer_inventory_notes?: string | null
+          full_name?: string | null
+          id: string
+          location?: string | null
+          onboarded?: boolean
+          role?: Database["public"]["Enums"]["user_role"] | null
+          seller_items?: string | null
+          updated_at?: string
+        }
+        Update: {
+          buyer_interests?: string[] | null
+          buyer_max_price?: number | null
+          buyer_min_price?: number | null
+          created_at?: string
+          dealer_inventory_notes?: string | null
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          onboarded?: boolean
+          role?: Database["public"]["Enums"]["user_role"] | null
+          seller_items?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +67,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "buyer" | "seller" | "dealer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +194,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["buyer", "seller", "dealer"],
+    },
   },
 } as const
