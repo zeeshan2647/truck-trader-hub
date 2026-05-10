@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
@@ -31,6 +32,11 @@ const SellRoute = SellRouteImport.update({
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrowseRoute = BrowseRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/onboarding': typeof OnboardingRoute
   '/saved': typeof SavedRoute
   '/sell': typeof SellRoute
   '/welcome': typeof WelcomeRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/onboarding': typeof OnboardingRoute
   '/saved': typeof SavedRoute
   '/sell': typeof SellRoute
   '/welcome': typeof WelcomeRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/onboarding': typeof OnboardingRoute
   '/saved': typeof SavedRoute
   '/sell': typeof SellRoute
   '/welcome': typeof WelcomeRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/browse'
+    | '/onboarding'
     | '/saved'
     | '/sell'
     | '/welcome'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/browse'
+    | '/onboarding'
     | '/saved'
     | '/sell'
     | '/welcome'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/browse'
+    | '/onboarding'
     | '/saved'
     | '/sell'
     | '/welcome'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
+  OnboardingRoute: typeof OnboardingRoute
   SavedRoute: typeof SavedRoute
   SellRoute: typeof SellRoute
   WelcomeRoute: typeof WelcomeRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/browse': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
+  OnboardingRoute: OnboardingRoute,
   SavedRoute: SavedRoute,
   SellRoute: SellRoute,
   WelcomeRoute: WelcomeRoute,
