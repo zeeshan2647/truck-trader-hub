@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Truck, Mail, Phone, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -62,23 +62,33 @@ function EmailForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("Check your email to verify your account, then sign in.");
-        setMode("signin");
+        // If email confirmation is required, there's no session yet.
+        if (!data.session) {
+          navigate({ to: "/verify-email", search: { email } });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          // Surface the unverified-email case to the verify screen
+          if (/confirm/i.test(error.message) || /verify/i.test(error.message)) {
+            navigate({ to: "/verify-email", search: { email } });
+            return;
+          }
+          throw error;
+        }
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication failed");
