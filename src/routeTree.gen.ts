@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as BrowseRouteImport } from './routes/browse'
@@ -16,6 +17,11 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ListingIdRouteImport } from './routes/listing.$id'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SellRoute = SellRouteImport.update({
   id: '/sell',
   path: '/sell',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/saved': typeof SavedRoute
   '/sell': typeof SellRoute
+  '/welcome': typeof WelcomeRoute
   '/listing/$id': typeof ListingIdRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/saved': typeof SavedRoute
   '/sell': typeof SellRoute
+  '/welcome': typeof WelcomeRoute
   '/listing/$id': typeof ListingIdRoute
 }
 export interface FileRoutesById {
@@ -70,13 +78,28 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/saved': typeof SavedRoute
   '/sell': typeof SellRoute
+  '/welcome': typeof WelcomeRoute
   '/listing/$id': typeof ListingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account' | '/browse' | '/saved' | '/sell' | '/listing/$id'
+  fullPaths:
+    | '/'
+    | '/account'
+    | '/browse'
+    | '/saved'
+    | '/sell'
+    | '/welcome'
+    | '/listing/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/browse' | '/saved' | '/sell' | '/listing/$id'
+  to:
+    | '/'
+    | '/account'
+    | '/browse'
+    | '/saved'
+    | '/sell'
+    | '/welcome'
+    | '/listing/$id'
   id:
     | '__root__'
     | '/'
@@ -84,6 +107,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/saved'
     | '/sell'
+    | '/welcome'
     | '/listing/$id'
   fileRoutesById: FileRoutesById
 }
@@ -93,11 +117,19 @@ export interface RootRouteChildren {
   BrowseRoute: typeof BrowseRoute
   SavedRoute: typeof SavedRoute
   SellRoute: typeof SellRoute
+  WelcomeRoute: typeof WelcomeRoute
   ListingIdRoute: typeof ListingIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sell': {
       id: '/sell'
       path: '/sell'
@@ -149,8 +181,19 @@ const rootRouteChildren: RootRouteChildren = {
   BrowseRoute: BrowseRoute,
   SavedRoute: SavedRoute,
   SellRoute: SellRoute,
+  WelcomeRoute: WelcomeRoute,
   ListingIdRoute: ListingIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
