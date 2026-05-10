@@ -1,7 +1,10 @@
-import { Link } from "@tanstack/react-router";
-import { Truck, Search, Heart, User } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Truck, Search, Heart, User, LogOut } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 export function Header() {
+  const { session, signOut } = useAuth();
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
@@ -26,6 +29,15 @@ export function Header() {
           <Link to="/account" className="rounded-md p-2 text-muted-foreground hover:text-foreground">
             <User className="h-4 w-4" />
           </Link>
+          {session && (
+            <button
+              onClick={async () => { await signOut(); navigate({ to: "/welcome" }); }}
+              className="rounded-md p-2 text-muted-foreground hover:text-foreground"
+              aria-label="Sign out"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          )}
         </nav>
       </div>
     </header>
