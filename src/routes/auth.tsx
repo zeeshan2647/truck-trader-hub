@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Truck, Mail, Phone, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,20 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const [tab, setTab] = useState<string>("email");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("rm-last-auth-method");
+      if (saved === "email" || saved === "phone" || saved === "google") setTab(saved);
+    } catch {}
+  }, []);
+
+  const onTabChange = (v: string) => {
+    setTab(v);
+    try { localStorage.setItem("rm-last-auth-method", v); } catch {}
+  };
+
   return (
     <main className="min-h-screen bg-background px-5 py-6">
       <div className="mx-auto max-w-sm">
@@ -35,7 +49,7 @@ function AuthPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="email" className="w-full">
+        <Tabs value={tab} onValueChange={onTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="email"><Mail className="mr-1 h-3.5 w-3.5" />Email</TabsTrigger>
             <TabsTrigger value="phone"><Phone className="mr-1 h-3.5 w-3.5" />Phone</TabsTrigger>
@@ -117,6 +131,11 @@ function EmailForm() {
       >
         {mode === "signin" ? "New here? Create an account" : "Have an account? Sign in"}
       </button>
+      {mode === "signin" && (
+        <Link to="/forgot-password" className="block text-center text-xs text-muted-foreground hover:text-foreground">
+          Forgot your password?
+        </Link>
+      )}
     </form>
   );
 }

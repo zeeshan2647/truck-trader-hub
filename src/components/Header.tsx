@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Truck, Search, Heart, User, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Header() {
   const { session, signOut } = useAuth();
@@ -29,6 +30,7 @@ export function Header() {
           <Link to="/account" className="rounded-md p-2 text-muted-foreground hover:text-foreground">
             <User className="h-4 w-4" />
           </Link>
+          <ThemeToggle />
           {session && (
             <button
               onClick={async () => { await signOut(); navigate({ to: "/welcome" }); }}
