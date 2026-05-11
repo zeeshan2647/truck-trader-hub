@@ -2,7 +2,13 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
 
-const PUBLIC_ROUTES = new Set(["/welcome", "/auth", "/verify-email"]);
+const PUBLIC_ROUTES = new Set([
+  "/welcome",
+  "/auth",
+  "/verify-email",
+  "/forgot-password",
+  "/reset-password",
+]);
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const { loading, session, profile } = useAuth();
