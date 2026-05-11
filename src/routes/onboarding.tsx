@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { REGIONS } from "@/lib/regions";
 import { useAuth, type Role } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -97,9 +99,27 @@ function Onboarding() {
         )}
 
         {step === 1 && (
-          <Section title="Where are you based?" subtitle="We'll use this to show nearby listings.">
-            <Label htmlFor="loc">City, State</Label>
-            <Input id="loc" autoFocus value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Dallas, TX" />
+          <Section title="Where are you based?" subtitle="Pick your state or province — we'll show nearby listings.">
+            <Label htmlFor="loc">State / Province</Label>
+            <Select value={location} onValueChange={setLocation}>
+              <SelectTrigger id="loc" className="h-11">
+                <SelectValue placeholder="Select state or province" />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                <SelectGroup>
+                  <SelectLabel>United States</SelectLabel>
+                  {REGIONS.filter((r) => r.country === "USA").map((r) => (
+                    <SelectItem key={`US-${r.code}`} value={`${r.name}, USA`}>{r.name}</SelectItem>
+                  ))}
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>Canada</SelectLabel>
+                  {REGIONS.filter((r) => r.country === "Canada").map((r) => (
+                    <SelectItem key={`CA-${r.code}`} value={`${r.name}, Canada`}>{r.name}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </Section>
         )}
 
