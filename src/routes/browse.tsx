@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, SlidersHorizontal, X, MapPin } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ListingCard } from "@/components/ListingCard";
 import { listings } from "@/lib/listings";
 import { FilterSheet } from "@/components/filters/FilterSheet";
+import { useAuth } from "@/lib/auth-context";
+import { regionFromLocation } from "@/lib/regions";
 import {
   activeFilterCount,
   defaultFilters,
@@ -15,6 +17,7 @@ import {
   MILEAGE_MIN,
   PRICE_MAX,
   PRICE_MIN,
+  DEFAULT_RADIUS,
   type Filters,
 } from "@/lib/filters";
 
@@ -33,6 +36,7 @@ export const Route = createFileRoute("/browse")({
 });
 
 function Browse() {
+  const { profile } = useAuth();
   const [filters, setFilters] = useState<Filters>(() => {
     if (typeof window === "undefined") return defaultFilters();
     try {
@@ -45,6 +49,21 @@ function Browse() {
     return defaultFilters();
   });
   const [open, setOpen] = useState(false);
+
+  // Auto-apply onboarding location once per session, if user hasn't set one.
+  const autoAppliedRef = useRef(false);
+  useEffect(() => {
+    if (autoAppliedRef.current) return;
+    if (filters.location) return;
+    const region = regionFromLocation(profile?.location);
+    if (!region) return;
+    autoAppliedRef.current = true;
+    setFilters((f) => ({
+      ...f,
+      location: { label: region.name, lat: region.lat, lng: region.lng },
+      radius: f.radius || DEFAULT_RADIUS,
+    }));
+  }, [profile?.location, filters.location]);
 
   const results = useMemo(() => {
     return listings.filter((l) => {
