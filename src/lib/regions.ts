@@ -2,28 +2,61 @@ export interface Region {
   code: string;
   name: string;
   country: "USA" | "Canada";
+  lat: number;
+  lng: number;
 }
 
-export const REGIONS: Region[] = [
-  // USA states
-  ...[
-    ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
-    ["CO","Colorado"],["CT","Connecticut"],["DE","Delaware"],["FL","Florida"],["GA","Georgia"],
-    ["HI","Hawaii"],["ID","Idaho"],["IL","Illinois"],["IN","Indiana"],["IA","Iowa"],
-    ["KS","Kansas"],["KY","Kentucky"],["LA","Louisiana"],["ME","Maine"],["MD","Maryland"],
-    ["MA","Massachusetts"],["MI","Michigan"],["MN","Minnesota"],["MS","Mississippi"],["MO","Missouri"],
-    ["MT","Montana"],["NE","Nebraska"],["NV","Nevada"],["NH","New Hampshire"],["NJ","New Jersey"],
-    ["NM","New Mexico"],["NY","New York"],["NC","North Carolina"],["ND","North Dakota"],["OH","Ohio"],
-    ["OK","Oklahoma"],["OR","Oregon"],["PA","Pennsylvania"],["RI","Rhode Island"],["SC","South Carolina"],
-    ["SD","South Dakota"],["TN","Tennessee"],["TX","Texas"],["UT","Utah"],["VT","Vermont"],
-    ["VA","Virginia"],["WA","Washington"],["WV","West Virginia"],["WI","Wisconsin"],["WY","Wyoming"],
-    ["DC","District of Columbia"],
-  ].map(([code, name]) => ({ code, name, country: "USA" as const })),
-  // Canadian provinces & territories
-  ...[
-    ["AB","Alberta"],["BC","British Columbia"],["MB","Manitoba"],["NB","New Brunswick"],
-    ["NL","Newfoundland and Labrador"],["NS","Nova Scotia"],["NT","Northwest Territories"],
-    ["NU","Nunavut"],["ON","Ontario"],["PE","Prince Edward Island"],["QC","Quebec"],
-    ["SK","Saskatchewan"],["YT","Yukon"],
-  ].map(([code, name]) => ({ code, name, country: "Canada" as const })),
+const US: Array<[string, string, number, number]> = [
+  ["AL","Alabama",32.806671,-86.79113],["AK","Alaska",61.370716,-152.404419],
+  ["AZ","Arizona",33.729759,-111.431221],["AR","Arkansas",34.969704,-92.373123],
+  ["CA","California",36.116203,-119.681564],["CO","Colorado",39.059811,-105.311104],
+  ["CT","Connecticut",41.597782,-72.755371],["DE","Delaware",39.318523,-75.507141],
+  ["FL","Florida",27.766279,-81.686783],["GA","Georgia",33.040619,-83.643074],
+  ["HI","Hawaii",21.094318,-157.498337],["ID","Idaho",44.240459,-114.478828],
+  ["IL","Illinois",40.349457,-88.986137],["IN","Indiana",39.849426,-86.258278],
+  ["IA","Iowa",42.011539,-93.210526],["KS","Kansas",38.5266,-96.726486],
+  ["KY","Kentucky",37.66814,-84.670067],["LA","Louisiana",31.169546,-91.867805],
+  ["ME","Maine",44.693947,-69.381927],["MD","Maryland",39.063946,-76.802101],
+  ["MA","Massachusetts",42.230171,-71.530106],["MI","Michigan",43.326618,-84.536095],
+  ["MN","Minnesota",45.694454,-93.900192],["MS","Mississippi",32.741646,-89.678696],
+  ["MO","Missouri",38.456085,-92.288368],["MT","Montana",46.921925,-110.454353],
+  ["NE","Nebraska",41.12537,-98.268082],["NV","Nevada",38.313515,-117.055374],
+  ["NH","New Hampshire",43.452492,-71.563896],["NJ","New Jersey",40.298904,-74.521011],
+  ["NM","New Mexico",34.840515,-106.248482],["NY","New York",42.165726,-74.948051],
+  ["NC","North Carolina",35.630066,-79.806419],["ND","North Dakota",47.528912,-99.784012],
+  ["OH","Ohio",40.388783,-82.764915],["OK","Oklahoma",35.565342,-96.928917],
+  ["OR","Oregon",44.572021,-122.070938],["PA","Pennsylvania",40.590752,-77.209755],
+  ["RI","Rhode Island",41.680893,-71.51178],["SC","South Carolina",33.856892,-80.945007],
+  ["SD","South Dakota",44.299782,-99.438828],["TN","Tennessee",35.747845,-86.692345],
+  ["TX","Texas",31.054487,-97.563461],["UT","Utah",40.150032,-111.862434],
+  ["VT","Vermont",44.045876,-72.710686],["VA","Virginia",37.769337,-78.169968],
+  ["WA","Washington",47.400902,-121.490494],["WV","West Virginia",38.491226,-80.954453],
+  ["WI","Wisconsin",44.268543,-89.616508],["WY","Wyoming",42.755966,-107.30249],
+  ["DC","District of Columbia",38.897438,-77.026817],
 ];
+
+const CA: Array<[string, string, number, number]> = [
+  ["AB","Alberta",53.9333,-116.5765],["BC","British Columbia",53.7267,-127.6476],
+  ["MB","Manitoba",53.7609,-98.8139],["NB","New Brunswick",46.5653,-66.4619],
+  ["NL","Newfoundland and Labrador",53.1355,-57.6604],["NS","Nova Scotia",44.682,-63.7443],
+  ["NT","Northwest Territories",64.8255,-124.8457],["NU","Nunavut",70.2998,-83.1076],
+  ["ON","Ontario",51.2538,-85.3232],["PE","Prince Edward Island",46.5107,-63.4168],
+  ["QC","Quebec",52.9399,-73.5491],["SK","Saskatchewan",52.9399,-106.4509],
+  ["YT","Yukon",64.2823,-135.0],
+];
+
+export const REGIONS: Region[] = [
+  ...US.map(([code, name, lat, lng]) => ({ code, name, country: "USA" as const, lat, lng })),
+  ...CA.map(([code, name, lat, lng]) => ({ code, name, country: "Canada" as const, lat, lng })),
+];
+
+// Profile.location is stored like "Texas, USA" or "Ontario, Canada"
+export function regionFromLocation(loc: string | null | undefined): Region | null {
+  if (!loc) return null;
+  const [name, country] = loc.split(",").map((s) => s.trim());
+  return (
+    REGIONS.find(
+      (r) => r.name === name && (country ? r.country === country : true),
+    ) ?? null
+  );
+}
