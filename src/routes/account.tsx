@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { LogOut, Mail, Pencil, Plus, Save, Trash2, X } from "lucide-react";
+import { LogOut, Mail, Pencil, Plus, Save, Sparkles, Trash2, X } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import {
 import { useAuth, type Role } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { REGIONS } from "@/lib/regions";
+import { getPlan } from "@/lib/plans";
 
 export const Route = createFileRoute("/account")({
   component: Account,
@@ -42,6 +43,7 @@ type UserListing = {
 function Account() {
   const { user, profile, refreshProfile, signOut } = useAuth();
   const navigate = useNavigate();
+  const plan = getPlan(profile?.subscription_plan);
 
   const [fullName, setFullName] = useState("");
   const [location, setLocation] = useState("");
@@ -106,6 +108,41 @@ function Account() {
           <h1 className="text-2xl font-bold tracking-tight">Your account</h1>
           <p className="mt-1 text-sm text-muted-foreground">Manage your profile and listings.</p>
         </header>
+
+        {/* Subscription card */}
+        <section className="rounded-2xl border bg-card p-5 shadow-[var(--shadow-card)]">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Subscription</h2>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="text-xl font-bold">{plan.name}</span>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                  {plan.price} {plan.cadence}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {plan.listingLimit === null
+                  ? `${listings.length} active listing${listings.length === 1 ? "" : "s"} · unlimited`
+                  : `${listings.length}/${plan.listingLimit} active listings used`}
+              </p>
+            </div>
+            <Button asChild variant="outline" className="gap-2">
+              <Link to="/pricing"><Sparkles className="h-4 w-4" /> Upgrade</Link>
+            </Button>
+          </div>
+          {plan.listingLimit !== null && (
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full bg-primary transition-all"
+                style={{ width: `${Math.min(100, (listings.length / plan.listingLimit) * 100)}%` }}
+              />
+            </div>
+          )}
+          <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+            <span className="rounded-md border px-2 py-1">Billing: managed at checkout</span>
+            <Link to="/pricing" className="rounded-md border px-2 py-1 hover:text-foreground">Change plan</Link>
+          </div>
+        </section>
 
         {/* Profile card */}
         <section className="rounded-2xl border bg-card p-5 shadow-[var(--shadow-card)]">
