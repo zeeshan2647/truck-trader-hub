@@ -27,6 +27,7 @@ export type Database = {
           onboarded: boolean
           role: Database["public"]["Enums"]["user_role"] | null
           seller_items: string | null
+          subscription_plan: string
           updated_at: string
         }
         Insert: {
@@ -41,6 +42,7 @@ export type Database = {
           onboarded?: boolean
           role?: Database["public"]["Enums"]["user_role"] | null
           seller_items?: string | null
+          subscription_plan?: string
           updated_at?: string
         }
         Update: {
@@ -55,6 +57,7 @@ export type Database = {
           onboarded?: boolean
           role?: Database["public"]["Enums"]["user_role"] | null
           seller_items?: string | null
+          subscription_plan?: string
           updated_at?: string
         }
         Relationships: []
@@ -65,11 +68,15 @@ export type Database = {
           category: string
           created_at: string
           description: string | null
+          expires_at: string | null
+          featured: boolean
+          homepage_featured: boolean
           id: string
           location: string | null
           mileage: number | null
           model: string | null
           price: number | null
+          status: string
           title: string
           updated_at: string
           user_id: string
@@ -80,11 +87,15 @@ export type Database = {
           category?: string
           created_at?: string
           description?: string | null
+          expires_at?: string | null
+          featured?: boolean
+          homepage_featured?: boolean
           id?: string
           location?: string | null
           mileage?: number | null
           model?: string | null
           price?: number | null
+          status?: string
           title: string
           updated_at?: string
           user_id: string
@@ -95,11 +106,15 @@ export type Database = {
           category?: string
           created_at?: string
           description?: string | null
+          expires_at?: string | null
+          featured?: boolean
+          homepage_featured?: boolean
           id?: string
           location?: string | null
           mileage?: number | null
           model?: string | null
           price?: number | null
+          status?: string
           title?: string
           updated_at?: string
           user_id?: string
