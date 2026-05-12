@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck, Truck, Wrench } from "lucide-react";
-import heroImg from "@/assets/hero-truck.jpg";
+import { ShieldCheck, Sparkles, Truck, Wrench } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ListingCard } from "@/components/ListingCard";
 import { HomeSearch } from "@/components/HomeSearch";
 import { listings } from "@/lib/listings";
+import { HeroVideo } from "@/components/HeroVideo";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -19,25 +20,17 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const featured = listings.filter((l) => l.promoted).concat(listings.filter((l) => !l.promoted)).slice(0, 4);
+  const { profile } = useAuth();
+  const recs = personalizedRecs(profile?.location ?? null, profile?.role ?? null);
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <section className="relative isolate overflow-hidden">
-        <img src={heroImg} alt="" width={1536} height={1024} className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-[image:var(--gradient-hero)]" />
-        <div className="relative mx-auto max-w-6xl px-4 pb-20 pt-14 text-primary-foreground sm:pb-28 sm:pt-20">
-          <h1 className="max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-            Find the right rig. <span className="text-accent">Move your business.</span>
-          </h1>
-          <p className="mt-3 max-w-xl text-sm text-primary-foreground/85 sm:text-base">
-            Thousands of commercial trucks and trailers from trusted dealers and private sellers.
-          </p>
-        </div>
-      </section>
+      <HeroVideo />
 
       <HomeSearch />
 
-      <section className="mx-auto max-w-6xl px-4 py-8">
+      <section className="mx-auto max-w-6xl px-4 py-10">
+        <h2 className="mb-4 text-xl font-bold tracking-tight">Browse by category</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
             { label: "Sleeper Trucks", icon: Truck, q: "Sleeper" },
@@ -68,6 +61,22 @@ function Index() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <div className="mb-4 flex items-end justify-between">
+          <div>
+            <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight">
+              <Sparkles className="h-5 w-5 text-accent" />
+              {profile?.location ? `Recommended near ${profile.location.split(",")[0]}` : "Recommended for you"}
+            </h2>
+            <p className="text-sm text-muted-foreground">Curated based on your profile and location.</p>
+          </div>
+          <Link to="/browse" className="text-sm font-medium text-primary hover:underline">More</Link>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {recs.map((l) => <ListingCard key={l.id} listing={l} />)}
+        </div>
+      </section>
+
       <footer className="border-t bg-card">
         <div className="mx-auto max-w-6xl px-4 py-6 text-center text-xs text-muted-foreground">
           © {new Date().getFullYear()} RigMarket. Built for owner-operators and fleets.
@@ -75,4 +84,17 @@ function Index() {
       </footer>
     </div>
   );
+}
+
+function personalizedRecs(location: string | null, role: string | null) {
+  const region = location?.split(",")[0]?.trim().toLowerCase() ?? "";
+  const sorted = [...listings].sort((a, b) => {
+    const aMatch = a.location.toLowerCase().includes(region) ? 1 : 0;
+    const bMatch = b.location.toLowerCase().includes(region) ? 1 : 0;
+    if (aMatch !== bMatch) return bMatch - aMatch;
+    if (role === "dealer") return b.price - a.price;
+    if (role === "buyer") return a.price - b.price;
+    return 0;
+  });
+  return sorted.slice(0, 4);
 }

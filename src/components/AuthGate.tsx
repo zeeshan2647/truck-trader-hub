@@ -8,6 +8,7 @@ const PUBLIC_ROUTES = new Set([
   "/verify-email",
   "/forgot-password",
   "/reset-password",
+  "/pricing",
 ]);
 
 export function AuthGate({ children }: { children: React.ReactNode }) {

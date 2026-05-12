@@ -15,6 +15,7 @@ export interface Profile {
   seller_items: string | null;
   dealer_inventory_notes: string | null;
   onboarded: boolean;
+  subscription_plan: string | null;
 }
 
 interface AuthCtx {
