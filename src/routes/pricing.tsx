@@ -27,10 +27,6 @@ function PricingPage() {
   const current = (profile?.subscription_plan as PlanId) ?? "free";
 
   const choose = async (id: PlanId) => {
-    if (id === "enterprise") {
-      window.location.href = "mailto:sales@rigmarket.app?subject=Enterprise%20plan%20inquiry";
-      return;
-    }
     if (!user) {
       navigate({ to: "/auth" });
       return;
