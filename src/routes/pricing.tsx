@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -27,10 +27,6 @@ function PricingPage() {
   const current = (profile?.subscription_plan as PlanId) ?? "free";
 
   const choose = async (id: PlanId) => {
-    if (id === "enterprise") {
-      window.location.href = "mailto:sales@rigmarket.app?subject=Enterprise%20plan%20inquiry";
-      return;
-    }
     if (!user) {
       navigate({ to: "/auth" });
       return;
@@ -87,6 +83,12 @@ function PricingPage() {
                   <li key={f} className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <span>{f}</span>
+                  </li>
+                ))}
+                {p.notIncluded?.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-muted-foreground">
+                    <X className="mt-0.5 h-4 w-4 shrink-0 opacity-60" />
+                    <span className="line-through decoration-1">{f}</span>
                   </li>
                 ))}
               </ul>
