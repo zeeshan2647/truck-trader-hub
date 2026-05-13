@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -83,6 +83,12 @@ function PricingPage() {
                   <li key={f} className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <span>{f}</span>
+                  </li>
+                ))}
+                {p.notIncluded?.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-muted-foreground">
+                    <X className="mt-0.5 h-4 w-4 shrink-0 opacity-60" />
+                    <span className="line-through decoration-1">{f}</span>
                   </li>
                 ))}
               </ul>
