@@ -1,4 +1,4 @@
-export type PlanId = "free" | "payg" | "dealer" | "growth" | "enterprise";
+export type PlanId = "free" | "dealer" | "growth";
 
 export type Plan = {
   id: PlanId;
@@ -31,21 +31,6 @@ export const PLANS: Plan[] = [
     cta: "Start free",
   },
   {
-    id: "payg",
-    name: "Pay Per Listing",
-    price: "$9.99",
-    cadence: "per listing",
-    blurb: "After your free listings — pay only for what you post.",
-    features: [
-      "$9.99 per listing",
-      "Active for 30 days",
-      "Standard visibility",
-      "Add featured boost anytime",
-    ],
-    listingLimit: null,
-    cta: "Choose pay-as-you-go",
-  },
-  {
     id: "dealer",
     name: "Dealer",
     price: "$29",
@@ -56,6 +41,11 @@ export const PLANS: Plan[] = [
       "Priority placement in search",
       "Verified seller badge",
       "Email support",
+    ],
+    notIncluded: [
+      "Homepage featured slots",
+      "Bulk inventory tools",
+      "Dedicated account manager",
     ],
     listingLimit: 20,
     highlight: true,
@@ -73,23 +63,12 @@ export const PLANS: Plan[] = [
       "Verified seller badge",
       "Priority support",
     ],
+    notIncluded: [
+      "Unlimited listings",
+      "Dedicated account manager",
+    ],
     listingLimit: 100,
     cta: "Choose Growth",
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: "Custom",
-    cadence: "talk to sales",
-    blurb: "Unlimited listings, dedicated onboarding and account team.",
-    features: [
-      "Unlimited active listings",
-      "Bulk inventory tools",
-      "Dedicated account manager",
-      "Custom integrations & reporting",
-    ],
-    listingLimit: null,
-    cta: "Contact sales",
   },
 ];
 
@@ -99,7 +78,6 @@ export function getPlan(id: string | null | undefined): Plan {
 
 export function planAllowsNewListing(planId: string | null | undefined, currentCount: number): boolean {
   const p = getPlan(planId);
-  if (p.id === "payg") return true; // assumed paid per listing
   if (p.listingLimit === null) return true;
   return currentCount < p.listingLimit;
 }
