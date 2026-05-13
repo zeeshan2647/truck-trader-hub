@@ -7,6 +7,7 @@ export type Plan = {
   cadence: string;
   blurb: string;
   features: string[];
+  notIncluded?: string[];
   listingLimit: number | null; // null = unlimited
   freeListings?: number;
   highlight?: boolean;
